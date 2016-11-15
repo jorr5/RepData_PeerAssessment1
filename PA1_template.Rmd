@@ -12,22 +12,29 @@ activity<- read.csv("C:/Users/jorr/Documents/R/activity.csv")
 
 
 ## What is mean total number of steps taken per day?
+```{r}
 total_of_steps_per_day <- sum(activity$steps, na.rm = TRUE)
 total_of_steps_per_day 
 ## 570608 Steps per Day
 total_steps_each_day <- aggregate(steps~date, data=activity, FUN=sum, na.rm=TRUE)
 
+```
+
 #Total Steps Each Day
+```{r}
 hist(total_steps_each_day$steps)
 
 total_steps_each_day_mean <- mean(total_steps_each_day$steps)
 total_steps_each_day_median <- median(total_steps_each_day$steps)
 total_steps_each_day_mean 
+```
+
 #Mean 10766.19
 total_steps_each_day_median 
 # Median 10765
 
 ## What is the average daily activity pattern?
+```{r}
 five_minutes_average <- aggregate(steps~interval, data=activity, FUN=mean, na.rm=TRUE)
 plot(x = five_minutes_average$interval, y = five_minutes_average$steps, type = "l") 
 
@@ -37,10 +44,13 @@ for (i in 1:288)
     if (five_minutes_average$steps[i] == max_steps)
         five_minute_interval_at_max_steps <- five_minutes_average$interval[i]
 }
-five_minute_interval_at_max_steps 
-## 835
+five_minute_interval_at_max_steps
+```
+
+# 835
 
 ## Imputing missing values
+```{r}
 total_na <- 0
 for (i in 1:17568)
 {
@@ -48,9 +58,13 @@ for (i in 1:17568)
         total_na <- total_na+1 
 }
 total_na
-## 2304 Total NA 
 
-###Fill in with 5 min interval mean
+```
+
+# 2304 Total NA 
+
+##Fill in with 5 min interval mean
+```{r}
 activity_filled_in <- activity
 for (i in 1:17568) # loop to find the na
 {
@@ -61,25 +75,31 @@ for (i in 1:17568) # loop to find the na
         {
             if (five_minutes_average$interval[j] == five_minute_pointer) # finding the value of mean of five minute interval data frame
                 activity_filled_in$steps[i] <- five_minutes_average$steps[j] # replacing the na by the mean in that fime minute interval 
+```
 
-        }
-    }
-}
-### Calculate the total number of steps taken each day
+## Calculate the total number of steps taken each day
+```{r}
 total_steps_each_day_filled_in <- aggregate(steps~date, data=activity_filled_in, FUN=sum, na.rm=TRUE)
 
-### Generate the Histogram by each day
+
+## Generate the Histogram by each day
 hist(total_steps_each_day_filled_in$steps)
 
 total_steps_each_day_mean_filled_in <- mean(total_steps_each_day_filled_in$steps)
 total_steps_each_day_median_filled_in <- median(total_steps_each_day_filled_in$steps)
 total_steps_each_day_mean_filled_in
-##10766.19 Mean Total Steps
 total_steps_each_day_median_filled_in
+```
+
+##10766.19 Mean Total Steps
+
 ##10766.19 Median Total Steps
 
 ## Are there differences in activity patterns between weekdays and weekends?
-### create vector (week_day) 
+
+ 
+```{r}
+## create vector (week_day) 
 week <- wday(activity_filled_in$date)
 week_day <- week
 for (i in 1:17568) # loop to find the na
@@ -100,10 +120,10 @@ for (i in 1:17568) # loop to find the na
         week_day[i] <- 'weekend'
 }
 
-### Create a new factor variable 
+## Create a new factor variable 
 activity_filled_in$weekday <-week_day
 
-# Find the elements by "weekday" or "weekend"
+## Find the elements by "weekday" or "weekend"
 weekday <- grep("weekday",activity_filled_in$weekday)
 weekday_frame <- activity_filled_in[weekday,]
 weekend_frame <- activity_filled_in[-weekday,]
@@ -114,4 +134,6 @@ five_minutes_average_weekend <- aggregate(steps~interval, data=weekend_frame, FU
 
 plot(x = five_minutes_average_weekday$interval, y = five_minutes_average_weekday$steps, type = "l") 
 
-plot(x = five_minutes_average_weekend$interval, y = five_minutes_average_weekend$steps, type = "l") 
+plot(x = five_minutes_average_weekend$interval, y = five_minutes_average_weekend$steps, type = "l")
+```
+
